@@ -1,0 +1,138 @@
+CREATE TABLE GoalEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    userId TEXT NOT NULL,
+    category TEXT NOT NULL,
+    title TEXT NOT NULL,
+    targetDays INTEGER NOT NULL,
+    dailyMinutes INTEGER NOT NULL,
+    preferredHour INTEGER,
+    createdAt INTEGER NOT NULL,
+    isActive INTEGER NOT NULL DEFAULT 1
+);
+
+CREATE TABLE DailyTaskEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    userId TEXT NOT NULL,
+    goalId TEXT NOT NULL,
+    date TEXT NOT NULL,
+    title TEXT NOT NULL,
+    durationMinutes INTEGER NOT NULL,
+    status TEXT NOT NULL,
+    sortOrder INTEGER NOT NULL
+);
+
+CREATE TABLE StudySessionEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    taskId TEXT NOT NULL,
+    startTimeMillis INTEGER NOT NULL,
+    endTimeMillis INTEGER,
+    pausedDurationMillis INTEGER NOT NULL DEFAULT 0,
+    lastPauseTimestamp INTEGER,
+    durationSeconds INTEGER NOT NULL DEFAULT 0,
+    status TEXT NOT NULL
+);
+
+CREATE TABLE GrowthRecordEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    userId TEXT NOT NULL,
+    date TEXT NOT NULL,
+    studyMinutes INTEGER NOT NULL,
+    xp INTEGER NOT NULL,
+    sourceId TEXT NOT NULL
+);
+
+CREATE TABLE AchievementEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    unlockedAt INTEGER NOT NULL
+);
+
+CREATE TABLE UserEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    nickname TEXT NOT NULL,
+    avatarUrl TEXT
+);
+
+CREATE TABLE SettingsEntity (
+    userId TEXT NOT NULL PRIMARY KEY,
+    themeMode TEXT NOT NULL DEFAULT 'SYSTEM',
+    notificationsEnabled INTEGER NOT NULL DEFAULT 0
+);
+
+-- Queries
+insertGoal:
+INSERT OR REPLACE INTO GoalEntity(id, userId, category, title, targetDays, dailyMinutes, preferredHour, createdAt, isActive)
+VALUES ?;
+
+getActiveGoal:
+SELECT * FROM GoalEntity WHERE userId = ? AND isActive = 1 LIMIT 1;
+
+insertTask:
+INSERT OR REPLACE INTO DailyTaskEntity(id, userId, goalId, date, title, durationMinutes, status, sortOrder)
+VALUES ?;
+
+getTasksForDate:
+SELECT * FROM DailyTaskEntity WHERE goalId = ? AND date = ? ORDER BY sortOrder ASC;
+
+getTaskById:
+SELECT * FROM DailyTaskEntity WHERE id = ?;
+
+updateTaskStatus:
+UPDATE DailyTaskEntity SET status = ? WHERE id = ?;
+
+insertSession:
+INSERT OR REPLACE INTO StudySessionEntity(id, taskId, startTimeMillis, endTimeMillis, pausedDurationMillis, lastPauseTimestamp, durationSeconds, status)
+VALUES ?;
+
+getActiveSession:
+SELECT * FROM StudySessionEntity WHERE taskId = ? AND status != 'COMPLETED' LIMIT 1;
+
+getSessionById:
+SELECT * FROM StudySessionEntity WHERE id = ?;
+
+updateSession:
+INSERT OR REPLACE INTO StudySessionEntity(id, taskId, startTimeMillis, endTimeMillis, pausedDurationMillis, lastPauseTimestamp, durationSeconds, status)
+VALUES ?;
+
+getRecordsForUser:
+SELECT * FROM GrowthRecordEntity WHERE userId = ?;
+
+isSourceSettled:
+SELECT EXISTS(SELECT 1 FROM GrowthRecordEntity WHERE sourceId = ?);
+
+insertRecord:
+INSERT INTO GrowthRecordEntity(id, userId, date, studyMinutes, xp, sourceId)
+VALUES ?;
+
+getAchievements:
+SELECT * FROM AchievementEntity;
+
+insertAchievement:
+INSERT OR IGNORE INTO AchievementEntity(id, title, description, unlockedAt)
+VALUES ?;
+
+-- User Queries
+getUser:
+SELECT * FROM UserEntity WHERE id = ?;
+
+insertUser:
+INSERT OR REPLACE INTO UserEntity(id, nickname, avatarUrl)
+VALUES ?;
+
+updateNickname:
+UPDATE UserEntity SET nickname = ? WHERE id = ?;
+
+-- Settings Queries
+getSettings:
+SELECT * FROM SettingsEntity WHERE userId = ?;
+
+insertSettings:
+INSERT OR REPLACE INTO SettingsEntity(userId, themeMode, notificationsEnabled)
+VALUES ?;
+
+updateThemeMode:
+UPDATE SettingsEntity SET themeMode = ? WHERE userId = ?;
+
+updateNotificationsEnabled:
+UPDATE SettingsEntity SET notificationsEnabled = ? WHERE userId = ?;
