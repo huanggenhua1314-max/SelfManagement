@@ -40,27 +40,33 @@ class SqlDelightGoalRepository(
             }
     }
 
-    override suspend fun createGoal(goal: Goal) = withContext(Dispatchers.IO) {
-        queries.insertGoal(
-            GoalEntity(
-                id = goal.id,
-                userId = goal.userId,
-                category = goal.category.name,
-                title = goal.title,
-                targetDays = goal.targetDays.toLong(),
-                dailyMinutes = goal.dailyMinutes.toLong(),
-                preferredHour = goal.preferredHour?.toLong(),
-                createdAt = goal.createdAt,
-                isActive = if (goal.isActive) 1L else 0L
+    override suspend fun createGoal(goal: Goal) {
+        withContext(Dispatchers.IO) {
+            queries.insertGoal(
+                GoalEntity(
+                    id = goal.id,
+                    userId = goal.userId,
+                    category = goal.category.name,
+                    title = goal.title,
+                    targetDays = goal.targetDays.toLong(),
+                    dailyMinutes = goal.dailyMinutes.toLong(),
+                    preferredHour = goal.preferredHour?.toLong(),
+                    createdAt = goal.createdAt,
+                    isActive = if (goal.isActive) 1L else 0L
+                )
             )
-        )
+        }
     }
 
-    override suspend fun updateGoal(goal: Goal) = withContext(Dispatchers.IO) {
-        createGoal(goal)
+    override suspend fun updateGoal(goal: Goal) {
+        withContext(Dispatchers.IO) {
+            createGoal(goal)
+        }
     }
 
-    override suspend fun deleteGoal(goalId: String) = withContext(Dispatchers.IO) {
-        // MVP 中暂未定义删除逻辑
+    override suspend fun deleteGoal(goalId: String) {
+        withContext(Dispatchers.IO) {
+            // MVP 中暂未定义删除逻辑
+        }
     }
 }

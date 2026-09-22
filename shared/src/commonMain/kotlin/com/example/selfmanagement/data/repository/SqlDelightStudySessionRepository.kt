@@ -19,12 +19,16 @@ class SqlDelightStudySessionRepository(
 
     private val queries = database.appDatabaseQueries
 
-    override suspend fun startSession(session: StudySession) = withContext(Dispatchers.IO) {
-        queries.insertSession(session.toEntity())
+    override suspend fun startSession(session: StudySession) {
+        withContext(Dispatchers.IO) {
+            queries.insertSession(session.toEntity())
+        }
     }
 
-    override suspend fun updateSession(session: StudySession) = withContext(Dispatchers.IO) {
-        queries.updateSession(session.toEntity())
+    override suspend fun updateSession(session: StudySession) {
+        withContext(Dispatchers.IO) {
+            queries.updateSession(session.toEntity())
+        }
     }
 
     override suspend fun getActiveSession(taskId: String): StudySession? = withContext(Dispatchers.IO) {

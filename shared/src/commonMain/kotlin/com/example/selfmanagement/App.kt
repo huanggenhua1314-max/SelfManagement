@@ -295,7 +295,13 @@ fun App() {
                         viewModel = viewModel,
                         onNavigateToGrowth = { navController.navigate(Screen.Growth.route) },
                         onNavigateToGoal = { navController.navigate("edit_goal") },
-                        onNavigateToCompanion = { navController.navigate(Screen.CompanionItem.route) }
+                        onNavigateToCompanion = {
+                            navController.navigate(Screen.CompanionItem.route) {
+                                popUpTo(Screen.Home.route) { saveState = true }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+                        }
                     )
                 }
             }

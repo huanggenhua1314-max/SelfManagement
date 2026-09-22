@@ -29,8 +29,10 @@ class SqlDelightGrowthRepository(
             }
     }
 
-    override suspend fun saveRecord(record: GrowthRecord) = withContext(Dispatchers.IO) {
-        queries.insertRecord(record.toEntity())
+    override suspend fun saveRecord(record: GrowthRecord) {
+        withContext(Dispatchers.IO) {
+            queries.insertRecord(record.toEntity())
+        }
     }
 
     override suspend fun isSourceSettled(sourceId: String): Boolean = withContext(Dispatchers.IO) {
@@ -46,8 +48,10 @@ class SqlDelightGrowthRepository(
             }
     }
 
-    override suspend fun saveAchievement(achievement: Achievement) = withContext(Dispatchers.IO) {
-        queries.insertAchievement(achievement.toEntity())
+    override suspend fun saveAchievement(achievement: Achievement) {
+        withContext(Dispatchers.IO) {
+            queries.insertAchievement(achievement.toEntity())
+        }
     }
 
     private fun GrowthRecordEntity.toDomain(): GrowthRecord {

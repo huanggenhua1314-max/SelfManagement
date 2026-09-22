@@ -31,14 +31,18 @@ class SqlDelightSettingsRepository(
             .map { it?.notificationsEnabled == 1L }
     }
 
-    override suspend fun updateThemeMode(userId: String, mode: ThemeMode) = withContext(Dispatchers.IO) {
-        ensureSettingsExists(userId)
-        queries.updateThemeMode(mode.name, userId)
+    override suspend fun updateThemeMode(userId: String, mode: ThemeMode) {
+        withContext(Dispatchers.IO) {
+            ensureSettingsExists(userId)
+            queries.updateThemeMode(mode.name, userId)
+        }
     }
 
-    override suspend fun updateNotificationsEnabled(userId: String, enabled: Boolean) = withContext(Dispatchers.IO) {
-        ensureSettingsExists(userId)
-        queries.updateNotificationsEnabled(if (enabled) 1L else 0L, userId)
+    override suspend fun updateNotificationsEnabled(userId: String, enabled: Boolean) {
+        withContext(Dispatchers.IO) {
+            ensureSettingsExists(userId)
+            queries.updateNotificationsEnabled(if (enabled) 1L else 0L, userId)
+        }
     }
 
     private suspend fun ensureSettingsExists(userId: String) {

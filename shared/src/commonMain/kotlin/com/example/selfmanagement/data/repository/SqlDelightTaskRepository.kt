@@ -36,11 +36,13 @@ class SqlDelightTaskRepository(
         }
     }
 
-    override suspend fun updateTask(task: DailyTask) = withContext(Dispatchers.IO) {
-        queries.updateTaskStatus(
-            status = task.status.name,
-            id = task.id
-        )
+    override suspend fun updateTask(task: DailyTask) {
+        withContext(Dispatchers.IO) {
+            queries.updateTaskStatus(
+                status = task.status.name,
+                id = task.id
+            )
+        }
     }
 
     override suspend fun getTodayTasks(goalId: String, date: String): List<DailyTask> = withContext(Dispatchers.IO) {

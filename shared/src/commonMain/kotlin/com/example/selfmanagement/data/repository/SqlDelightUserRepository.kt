@@ -28,11 +28,15 @@ class SqlDelightUserRepository(
             }
     }
 
-    override suspend fun saveUser(user: User) = withContext(ioDispatcher) {
-        queries.insertUser(UserEntity(user.id, user.nickname, user.avatarUrl))
+    override suspend fun saveUser(user: User) {
+        withContext(ioDispatcher) {
+            queries.insertUser(UserEntity(user.id, user.nickname, user.avatarUrl))
+        }
     }
 
-    override suspend fun updateNickname(id: String, nickname: String) = withContext(ioDispatcher) {
-        queries.updateNickname(nickname, id)
+    override suspend fun updateNickname(id: String, nickname: String) {
+        withContext(ioDispatcher) {
+            queries.updateNickname(nickname, id)
+        }
     }
 }
